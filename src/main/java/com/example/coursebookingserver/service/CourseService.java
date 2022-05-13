@@ -15,4 +15,6 @@ public interface CourseService {
 
     void addCourse(Course course);
 
+    Course findCourseById(Long id);
+
 }

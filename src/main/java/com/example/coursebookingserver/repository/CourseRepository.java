@@ -14,4 +14,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query("select c from Course c where c.name like %:keyword% or c.tutor like %:keyword%")
     Page<Course> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
+    Course findCourseById(Long id);
 }

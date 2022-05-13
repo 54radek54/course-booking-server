@@ -41,4 +41,9 @@ public class CourseServiceImplementation implements CourseService {
         }
     }
 
+    @Override
+    public Course findCourseById(Long id){
+        return courseRepository.findCourseById(id);
+    }
+
 }
