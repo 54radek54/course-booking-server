@@ -19,12 +19,12 @@ public class CourseServiceImplementation implements CourseService {
 
     @Override
     public Page<Course> getAllCourses(int pageable){
-        return courseRepository.findAll(PageRequest.of(pageable,10));
+        return courseRepository.findAll(PageRequest.of(pageable,5));
     }
 
     @Override
     public Page<Course> getAllCoursesByKeyword(String keyword, int pageable){
-        return courseRepository.findByKeyword(keyword, PageRequest.of(pageable,10));
+        return courseRepository.findByKeyword(keyword, PageRequest.of(pageable,5));
     }
 
     @Override

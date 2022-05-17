@@ -5,44 +5,69 @@ import com.example.coursebookingserver.model.Course;
 import com.example.coursebookingserver.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 public class CourseController {
 
     private final CourseService courseService;
 
     @GetMapping("/courses")
-    public List<Course> getAllCourses(@RequestParam(defaultValue = "") String keyword, @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity getAllCourses(@RequestParam(defaultValue = "") String keyword, @RequestParam(defaultValue = "0") int page) {
         Page<Course> courseList;
-        if (keyword == null) {
-            courseList = courseService.getAllCourses(page);
-        } else {
-            courseList = courseService.getAllCoursesByKeyword(keyword, page);
+        try{
+            if (keyword == null) {
+                courseList = courseService.getAllCourses(page);
+            } else {
+                courseList = courseService.getAllCoursesByKeyword(keyword, page);
+            }
+            if(page>courseList.getTotalPages()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Argument not found!");
+            }
+            return ResponseEntity.ok().body(courseList);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        if(page>courseList.getTotalPages()){
-            throw new AppBasicException("Argument not found!");
-        }
-        return courseList.getContent();
     }
 
     @PostMapping("/course")
-    public Course addCourse(@RequestBody Course course) throws AppBasicException {
-        courseService.addCourse(course);
-        return course;
+    public ResponseEntity addCourse(@RequestBody Course course){
+        try{
+            courseService.addCourse(course);
+            return ResponseEntity.ok().body(course);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/deleteCourse/{id}")
-    public Course deleteCourse(@PathVariable("id") Long id) {
-        Course course=courseService.findCourseById(id);
-        if(course!=null){
-            courseService.deleteCourseById(id);
-            return course;
-        }else {
-            throw new AppBasicException("User not found!");
+    public ResponseEntity deleteCourse(@PathVariable("id") Long id) {
+        try{
+            Course course=courseService.findCourseById(id);
+            if(course!=null){
+                courseService.deleteCourseById(id);
+                return ResponseEntity.ok().body(course);
+            }else {
+                throw new AppBasicException("User not found!");
+            }
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/course/{id}")
+    public ResponseEntity getCourseById(@PathVariable("id") Long id) {
+        try{
+            Course course=courseService.findCourseById(id);
+            if(course!=null){
+                return ResponseEntity.ok().body(course);
+            }else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found!");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
