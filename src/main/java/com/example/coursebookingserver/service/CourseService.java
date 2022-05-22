@@ -17,4 +17,6 @@ public interface CourseService {
 
     Course findCourseById(Long id);
 
+    Course editCourseById(Course course, Long id);
+
 }

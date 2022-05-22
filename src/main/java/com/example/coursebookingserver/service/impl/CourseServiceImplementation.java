@@ -1,6 +1,7 @@
 package com.example.coursebookingserver.service.impl;
 
 import com.example.coursebookingserver.exception.AppBasicException;
+import com.example.coursebookingserver.model.AppUser;
 import com.example.coursebookingserver.model.Course;
 import com.example.coursebookingserver.repository.CourseRepository;
 import com.example.coursebookingserver.service.CourseService;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.PersistenceException;
+import java.security.Principal;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +41,16 @@ public class CourseServiceImplementation implements CourseService {
         }catch (PersistenceException e){
             throw new AppBasicException("Course can't be saved!");
         }
+    }
+
+    @Override
+    public Course editCourseById(Course course, Long id)throws AppBasicException{
+        Course updateCourse=courseRepository.findCourseById(id);
+        updateCourse.setName(course.getName());
+        updateCourse.setTutor(course.getTutor());
+        updateCourse.setCost(course.getCost());
+        courseRepository.saveAndFlush(updateCourse);
+        return updateCourse;
     }
 
     @Override

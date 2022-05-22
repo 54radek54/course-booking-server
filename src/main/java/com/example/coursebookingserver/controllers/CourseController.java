@@ -34,6 +34,20 @@ public class CourseController {
         }
     }
 
+    @PostMapping("/updateCourse/{id}")
+    public ResponseEntity updateCourse(@RequestBody Course course, @PathVariable("id") Long id){
+        try{
+            if(course!=null && courseService.findCourseById(id)!=null){
+                Course updatedCourse=courseService.editCourseById(course,id);
+                return ResponseEntity.ok().body(updatedCourse);
+            }else {
+                throw new AppBasicException("User not found!");
+            }
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @PostMapping("/course")
     public ResponseEntity addCourse(@RequestBody Course course){
         try{
@@ -44,7 +58,7 @@ public class CourseController {
         }
     }
 
-    @DeleteMapping("/deleteCourse/{id}")
+    @DeleteMapping("/course/{id}")
     public ResponseEntity deleteCourse(@PathVariable("id") Long id) {
         try{
             Course course=courseService.findCourseById(id);
